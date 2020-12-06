@@ -230,22 +230,23 @@ class MailBox(BaseMailBox):
         super().__init__()
 
     def _get_mailbox_client(self):
-        if self._starttls:
-            if self._keyfile or self._certfile:
-                raise ValueError("starttls cannot be combined with keyfile neither with certfile.")
-            if sys.version_info.minor < 9:
-                client = imaplib.IMAP4(self._host, self._port)
-            else:
-                client = imaplib.IMAP4(self._host, self._port, self._timeout)  # noqa
-            result = client.starttls(self._ssl_context)
-            check_command_status(result, MailboxStarttlsError)
-            return client
-        else:
-            if sys.version_info.minor < 9:
-                return imaplib.IMAP4_SSL(self._host, self._port, self._keyfile, self._certfile, self._ssl_context)
-            else:
-                return imaplib.IMAP4_SSL(self._host, self._port, self._keyfile,  # noqa
-                                         self._certfile, self._ssl_context, self._timeout)
+        return imaplib.IMAP4_SSL(self._host, self._port)
+        #if self._starttls:
+        #    if self._keyfile or self._certfile:
+        #        raise ValueError("starttls cannot be combined with keyfile neither with certfile.")
+        #    if sys.version_info.minor < 9:
+        #        client = imaplib.IMAP4(self._host, self._port)
+        #    else:
+        #        client = imaplib.IMAP4(self._host, self._port, self._timeout)  # noqa
+        #    result = client.starttls(self._ssl_context)
+        #    check_command_status(result, MailboxStarttlsError)
+        #    return client
+        #else:
+        #    if sys.version_info.minor < 9:
+        #        return imaplib.IMAP4_SSL(self._host, self._port, self._keyfile, self._certfile, self._ssl_context)
+        #    else:
+        #        return imaplib.IMAP4_SSL(self._host, self._port, self._keyfile,  # noqa
+        #                                 self._certfile, self._ssl_context, self._timeout)
 
     def xoauth2(self, username: str, access_token: str, initial_folder: str = 'INBOX'):
         """Authenticate to account using OAuth 2.0 mechanism"""
